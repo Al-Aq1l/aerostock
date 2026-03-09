@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Route;
 // Dashboard
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+// Mentahan Dashboard Tailwind
+Route::get('/mentahan-dashboard', function () {
+    return view('mentahan');
+});
+
 // POS
 Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
 Route::post('/pos/sale', [PosController::class, 'store'])->name('pos.store');
