@@ -52,7 +52,7 @@ class DashboardController extends Controller
         // Recent transactions
         $recentSales = Sale::with('items.product')
             ->latest()
-            ->take(10)
+            ->take(5)
             ->get();
 
         return view('dashboard.index', compact(

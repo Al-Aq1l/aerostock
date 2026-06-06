@@ -29,7 +29,7 @@
         <div class="card-title">Informasi Produk</div>
       </div>
       <div class="card-body">
-        <form method="POST" action="{{ $isEdit ? route('products.update', $product) : route('products.store') }}">
+        <form method="POST" action="{{ $isEdit ? route('products.update', $product) : route('products.store') }}" enctype="multipart/form-data">
           @csrf
           @if($isEdit) @method('PUT') @endif
 
@@ -52,7 +52,8 @@
               <label for="name">Nama Produk *</label>
               <input type="text" class="form-control" name="name" id="name"
                      value="{{ old('name', $product->name ?? '') }}"
-                     placeholder="Contoh: MacBook Pro 14" required>
+                     placeholder="Contoh: MacBook Pro 14" required
+                     oninput="updatePreview()">
             </div>
             <div class="form-group">
               <label for="category_id">Kategori *</label>
@@ -68,13 +69,26 @@
             </div>
           </div>
 
+          <div class="form-group">
+            <label for="supplier_id">Supplier</label>
+            <select class="form-control" name="supplier_id" id="supplier_id">
+              <option value="">Pilih supplier...</option>
+              @foreach($suppliers as $supplier)
+                <option value="{{ $supplier->id }}"
+                  {{ old('supplier_id', $product->supplier_id ?? '') == $supplier->id ? 'selected' : '' }}>
+                  {{ $supplier->name }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+
           <div class="form-grid">
             <div class="form-group">
               <label for="price">Harga Jual (Rp) *</label>
               <input type="number" class="form-control" name="price" id="price"
                      value="{{ old('price', $product->price ?? '') }}"
                      step="1" min="0" placeholder="0" required
-                     oninput="calcMargin()">
+                     oninput="calcMargin(); updatePreview()">
             </div>
             <div class="form-group">
               <label for="cost">Harga Beli (Rp) *</label>
@@ -112,10 +126,14 @@
           @endif
 
           <div class="form-group">
-            <label for="image_url">URL Gambar</label>
-            <input type="url" class="form-control" name="image_url" id="image_url"
-                   value="{{ old('image_url', $product->image_url ?? '') }}"
-                   placeholder="https://..." oninput="previewImage(this.value)">
+            <label for="image">Gambar Produk</label>
+            <input type="file" class="form-control" name="image" id="image"
+                   accept="image/*" onchange="previewImage(this)">
+            @if($isEdit && $product->image_url)
+              <div style="font-size:12px;color:var(--slate-400);margin-top:6px">
+                Kosongkan jika tidak ingin mengganti gambar.
+              </div>
+            @endif
           </div>
 
           <div class="form-group">
@@ -145,8 +163,8 @@
                src="{{ $product->image_url ?? 'https://placehold.co/300/EFF6FF/2563EB?text=Gambar' }}"
                alt="Pratinjau"
                style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:var(--radius);margin-bottom:12px;background:var(--surface-2)">
-          <div style="font-size:14px;font-weight:700;color:var(--charcoal)">{{ $product->name ?? 'Nama Produk' }}</div>
-          <div style="font-size:18px;font-weight:800;color:var(--accent);margin-top:4px">
+          <div id="previewName" style="font-size:14px;font-weight:700;color:var(--charcoal)">{{ old('name', $product->name ?? 'Nama Produk') }}</div>
+          <div id="previewPrice" style="font-size:18px;font-weight:800;color:var(--accent);margin-top:4px">
             Rp{{ number_format($product->price ?? 0, 0, ',', '.') }}
           </div>
         </div>
@@ -183,12 +201,26 @@
 
 @push('scripts')
 <script>
-  function previewImage(url) {
+  function previewImage(input) {
     const img = document.getElementById('previewImg');
-    if(url) {
-      img.src = url;
-      img.onerror = () => img.src = 'https://placehold.co/300/EFF6FF/2563EB?text=URL+Tidak+Valid';
+    const file = input.files && input.files[0];
+    if(file) {
+      img.src = URL.createObjectURL(file);
+      img.onload = () => URL.revokeObjectURL(img.src);
     }
+  }
+
+  function formatRupiah(value) {
+    return 'Rp' + new Intl.NumberFormat('id-ID', {
+      maximumFractionDigits: 0
+    }).format(value || 0);
+  }
+
+  function updatePreview() {
+    const name = document.getElementById('name').value.trim();
+    const price = parseFloat(document.getElementById('price').value) || 0;
+    document.getElementById('previewName').textContent = name || 'Nama Produk';
+    document.getElementById('previewPrice').textContent = formatRupiah(price);
   }
 
   function calcMargin() {
@@ -212,5 +244,6 @@
     }
   }
   calcMargin();
+  updatePreview();
 </script>
 @endpush

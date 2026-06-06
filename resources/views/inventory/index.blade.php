@@ -69,7 +69,7 @@
                   <div class="product-name-cell">{{ $product->name }}</div>
                 </div>
               </td>
-              <td><span class="badge badge-slate">{{ $product->category->name ?? '-' }}</span></td>
+              <td>{{ $product->category->name ?? '-' }}</td>
               <td><span class="sku-code">{{ $product->sku }}</span></td>
               <td>
                 <span style="font-size:15px;font-weight:700;color:var(--charcoal)">{{ $qty }}</span>

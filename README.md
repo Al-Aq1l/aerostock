@@ -1,59 +1,306 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AeroStock - Sistem POS dan Inventori UMKM Retail
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+AeroStock adalah aplikasi web berbasis Laravel untuk membantu UMKM retail mengelola transaksi kasir, stok barang, produk, kategori, supplier, dan laporan penjualan dalam satu platform.
 
-## About Laravel
+Proyek ini disusun berdasarkan requirement brainstorming praktikum:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Nama: Al Aqil Bintang Samudra
+- NPM: 13.2023.1.01197
+- Tema: Sistem POS dan manajemen inventori UMKM retail
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Latar Belakang
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Berdasarkan riset operasional UMKM retail, pengelolaan inventaris dan transaksi masih sering mengalami beberapa kendala:
 
-## Learning Laravel
+- Pencatatan manual menggunakan buku atau spreadsheet dapat menyebabkan selisih antara stok fisik dan data digital.
+- Banyak sistem POS sederhana belum memiliki landing page yang informatif untuk branding toko.
+- Data transaksi dan stok perlu dilindungi dengan sistem login dan pembagian hak akses.
+- Kasir membutuhkan proses input transaksi yang cepat, tetapi tetap tervalidasi agar stok dan harga tidak keliru.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Tujuan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+AeroStock dibuat untuk:
 
-## Laravel Sponsors
+- Mengimplementasikan materi praktikum Laravel seperti CRUD, MVC, Eloquent ORM, authentication, Blade templating, pagination, dan layouting.
+- Menyediakan alur pengelolaan stok yang lebih sistematis dan mudah dipantau.
+- Membantu toko memiliki tampilan web yang profesional melalui landing page responsif.
+- Memisahkan akses Admin dan Kasir agar data master lebih aman.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Fitur Utama
 
-### Premium Partners
+### 1. Professional Landing Page
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Halaman awal publik yang berisi:
 
-## Contributing
+- Hero section AeroStock
+- Product features
+- Contact / About Us
+- Tombol masuk atau daftar
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Route:
 
-## Code of Conduct
+```text
+/
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Secure Authentication System
 
-## Security Vulnerabilities
+Sistem autentikasi untuk menjaga akses aplikasi.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Fitur:
 
-## License
+- Login
+- Register
+- Logout
+- Role Admin
+- Role Kasir
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Route:
+
+```text
+/login
+/register
+```
+
+### 3. Role Admin dan Kasir
+
+Admin dapat mengakses seluruh fitur manajemen:
+
+- Dashboard
+- POS
+- Produk
+- Kategori
+- Supplier
+- Inventori
+- Laporan
+
+Kasir diarahkan ke tampilan POS full screen agar proses transaksi lebih fokus. Tampilan kasir hanya menampilkan POS dan tombol logout kecil.
+
+### 4. POS Dashboard
+
+Halaman kasir untuk melakukan transaksi penjualan.
+
+Fitur:
+
+- Filter produk berdasarkan kategori
+- Keranjang belanja
+- Pilihan metode pembayaran: tunai, kartu, e-wallet
+- Perhitungan subtotal, pajak, dan total otomatis
+- Validasi stok agar tidak menjual melebihi stok tersedia
+- Modal transaksi berhasil
+
+Route:
+
+```text
+/pos
+```
+
+### 5. Smart Inventory Forms
+
+Fitur manajemen stok dan data master.
+
+Data yang dapat dikelola:
+
+- Produk
+- Kategori
+- Supplier
+- Stok barang
+- Batas minimum stok
+
+Fitur pendukung:
+
+- Tambah data
+- Edit data
+- Hapus data
+- Search
+- Filter
+- Pagination
+- Status stok: aman, menipis, habis
+
+Route:
+
+```text
+/products
+/categories
+/suppliers
+/inventory
+```
+
+### 6. Dashboard
+
+Dashboard utama untuk memantau kondisi toko.
+
+Informasi yang ditampilkan:
+
+- Pendapatan hari ini
+- Transaksi hari ini
+- Total produk aktif
+- Jumlah stok menipis
+- Grafik penjualan 30 hari terakhir
+- Peringatan stok
+- Transaksi terbaru
+
+Route:
+
+```text
+/dashboard
+```
+
+### 7. Laporan Penjualan
+
+Halaman laporan untuk melihat riwayat transaksi.
+
+Informasi yang ditampilkan:
+
+- Nomor referensi transaksi
+- Tanggal transaksi
+- Metode pembayaran
+- Item terjual
+- Total transaksi
+- Status transaksi
+
+Route:
+
+```text
+/reports
+```
+
+## Teknologi yang Digunakan
+
+- Laravel 12
+- PHP 8.2+
+- MySQL
+- Blade Template
+- Eloquent ORM
+- Vite
+- CSS Custom berbasis design system AeroStock
+- JavaScript untuk interaksi POS
+
+## Struktur Database
+
+Tabel utama:
+
+- `users`
+- `categories`
+- `suppliers`
+- `products`
+- `inventory`
+- `sales`
+- `sale_items`
+
+Relasi utama:
+
+- Category memiliki banyak Product
+- Supplier memiliki banyak Product
+- Product memiliki satu Inventory
+- Sale memiliki banyak SaleItem
+- SaleItem terhubung ke Product
+
+## Akun Demo
+
+Setelah menjalankan seeder, tersedia akun:
+
+```text
+Admin
+Email    : admin@aerostock.test
+Password : password
+
+Kasir
+Email    : kasir@aerostock.test
+Password : password
+```
+
+## Cara Menjalankan Project
+
+1. Install dependency PHP:
+
+```bash
+composer install
+```
+
+2. Install dependency frontend:
+
+```bash
+npm install
+```
+
+3. Salin file environment:
+
+```bash
+cp .env.example .env
+```
+
+4. Generate application key:
+
+```bash
+php artisan key:generate
+```
+
+5. Sesuaikan konfigurasi database pada `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=aerostock
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+6. Jalankan migration dan seeder:
+
+```bash
+php artisan migrate --seed
+```
+
+7. Build asset:
+
+```bash
+npm run build
+```
+
+8. Jalankan server:
+
+```bash
+php artisan serve
+```
+
+Project dapat dibuka melalui:
+
+```text
+http://127.0.0.1:8000
+```
+
+## Perintah Pengujian
+
+Menjalankan test Laravel:
+
+```bash
+php artisan test
+```
+
+Melihat route yang tersedia:
+
+```bash
+php artisan route:list
+```
+
+## Ringkasan Requirement dan Implementasi
+
+| Requirement | Implementasi |
+| --- | --- |
+| Landing page informatif | Halaman `/` dengan hero, fitur, dan contact/about |
+| Login dan register | AuthController dan view auth |
+| Admin vs Kasir | Kolom `role` pada users dan Gate `manage-catalog` |
+| CRUD produk | ProductController dan halaman products |
+| CRUD kategori | CategoryController dan halaman categories |
+| CRUD supplier | SupplierController dan halaman suppliers |
+| Manajemen stok | InventoryController dan halaman inventory |
+| POS kasir | PosController, `public/js/pos.js`, dan tampilan kasir full screen |
+| Dashboard grafik dan stok | DashboardController dan view dashboard |
+| Laporan transaksi | ReportController dan view reports |
+| Pagination dan search | Produk, supplier, inventori, laporan |
+
+## Kesimpulan
+
+AeroStock memenuhi kebutuhan pengguna UMKM retail dengan menyediakan sistem POS, inventori, autentikasi, role pengguna, landing page, dashboard, dan laporan penjualan dalam satu aplikasi Laravel yang terstruktur.

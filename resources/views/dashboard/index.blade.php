@@ -95,7 +95,9 @@
     <div class="card animate-in" style="animation-delay:0.30s">
       <div class="card-header">
         <div class="card-title">Peringatan Stok</div>
-        <a href="{{ route('inventory.index') }}?status=low" class="btn btn-secondary" style="padding:5px 12px;font-size:12px">Lihat Semua</a>
+        @can('manage-catalog')
+          <a href="{{ route('inventory.index') }}?status=low" class="btn btn-secondary" style="padding:5px 12px;font-size:12px">Lihat Semua</a>
+        @endcan
       </div>
       <div class="card-body" style="padding-top:10px">
         @forelse($lowStockItems as $item)
@@ -139,9 +141,12 @@
 
   {{-- ── Transaksi Terakhir ────────────────────────────────────── --}}
   <div class="card animate-in" style="animation-delay:0.35s">
-    <div class="card-header">
-      <div class="card-title">Transaksi Terakhir</div>
-      <span style="font-size:12px;color:var(--slate-400)">10 penjualan terbaru</span>
+    <div class="card-header" style="align-items:flex-start;gap:14px;padding-top:16px">
+      <div style="padding:1px 0 3px">
+        <div class="card-title" style="line-height:1.25">Transaksi Terakhir</div>
+        <div style="font-size:12px;line-height:1.35;color:var(--slate-400);margin-top:3px">5 penjualan terbaru</div>
+      </div>
+      <a href="{{ route('reports.index') }}" class="btn btn-secondary" style="padding:5px 12px;font-size:12px;white-space:nowrap">Lihat Semua</a>
     </div>
     <div class="table-wrapper">
       <table>
@@ -164,7 +169,7 @@
             <td>{{ $sale->items->count() }} item</td>
             <td>
               @php
-                $payLabels = ['cash'=>'Tunai','card'=>'Kartu','ewallet'=>'E-Wallet'];
+                $payLabels = ['cash'=>'Tunai','card'=>'Kartu','ewallet'=>'QRIS'];
               @endphp
               <span class="badge badge-slate">{{ $payLabels[$sale->payment_method] ?? $sale->payment_method }}</span>
             </td>

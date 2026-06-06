@@ -7,13 +7,30 @@ use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Models\Supplier;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        User::create([
+            'name' => 'Admin AeroStock',
+            'email' => 'admin@aerostock.test',
+            'role' => 'admin',
+            'password' => Hash::make('password'),
+        ]);
+
+        User::create([
+            'name' => 'Kasir AeroStock',
+            'email' => 'kasir@aerostock.test',
+            'role' => 'cashier',
+            'password' => Hash::make('password'),
+        ]);
+
         // ── Categories ──────────────────────────────────────────────────────
         $categories = [
             ['name' => 'Electronics',   'slug' => 'electronics',   'icon' => '💻', 'color' => '#2563EB'],
@@ -27,6 +44,43 @@ class DatabaseSeeder extends Seeder
         $catModels = [];
         foreach ($categories as $cat) {
             $catModels[$cat['slug']] = Category::create($cat);
+        }
+
+        // ── Suppliers ───────────────────────────────────────────────────────
+        $suppliers = [
+            'global-tech' => [
+                'name' => 'Global Tech Distributor',
+                'contact_name' => 'Rani Prasetya',
+                'phone' => '0812-9000-1100',
+                'email' => 'sales@globaltech.test',
+                'address' => 'Jl. Industri Digital No. 12, Jakarta',
+            ],
+            'peripheral-hub' => [
+                'name' => 'Peripheral Hub Indonesia',
+                'contact_name' => 'Dimas Arya',
+                'phone' => '0813-2200-7788',
+                'email' => 'orders@peripheralhub.test',
+                'address' => 'Komplek Niaga Elektronik Blok B7, Bandung',
+            ],
+            'office-mart' => [
+                'name' => 'Office Mart Supply',
+                'contact_name' => 'Maya Lestari',
+                'phone' => '0811-6400-5522',
+                'email' => 'hello@officemart.test',
+                'address' => 'Jl. Retail Raya No. 45, Surabaya',
+            ],
+            'network-nusa' => [
+                'name' => 'Network Nusa Solusindo',
+                'contact_name' => 'Fajar Nugroho',
+                'phone' => '0821-3300-4411',
+                'email' => 'support@networknusa.test',
+                'address' => 'Jl. Infrastruktur No. 8, Yogyakarta',
+            ],
+        ];
+
+        $supplierModels = [];
+        foreach ($suppliers as $slug => $supplier) {
+            $supplierModels[$slug] = Supplier::create($supplier);
         }
 
         // ── Products (24) ────────────────────────────────────────────────────
@@ -67,6 +121,12 @@ class DatabaseSeeder extends Seeder
         foreach ($products as $p) {
             $product = Product::create([
                 'category_id' => $catModels[$p['cat']]->id,
+                'supplier_id' => match ($p['cat']) {
+                    'networking' => $supplierModels['network-nusa']->id,
+                    'office' => $supplierModels['office-mart']->id,
+                    'peripherals', 'accessories' => $supplierModels['peripheral-hub']->id,
+                    default => $supplierModels['global-tech']->id,
+                },
                 'name'        => $p['name'],
                 'sku'         => 'SKU-' . strtoupper(Str::random(6)),
                 'price'       => $p['price'],

@@ -25,6 +25,8 @@ class PosController extends Controller
 
     public function store(Request $request)
     {
+        abort_unless($request->user()?->role === 'cashier', 403);
+
         $request->validate([
             'items'          => 'required|array|min:1',
             'items.*.id'     => 'required|exists:products,id',
@@ -36,8 +38,17 @@ class PosController extends Controller
         $lineItems = [];
 
         foreach ($request->items as $item) {
-            $product  = Product::findOrFail($item['id']);
+            $product  = Product::with('inventory')->findOrFail($item['id']);
             $qty      = (int) $item['qty'];
+            $available = $product->inventory?->quantity ?? 0;
+
+            if ($qty > $available) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Stok {$product->name} tidak mencukupi.",
+                ], 422);
+            }
+
             $lineSub  = $product->price * $qty;
             $subtotal += $lineSub;
             $lineItems[] = [
@@ -78,7 +89,17 @@ class PosController extends Controller
         return response()->json([
             'success'   => true,
             'reference' => $sale->reference,
+            'subtotal'  => $sale->subtotal,
+            'tax'       => $sale->tax,
             'total'     => $sale->total,
+            'payment_method' => $sale->payment_method,
+            'created_at' => $sale->created_at->toIso8601String(),
+            'items' => collect($lineItems)->map(fn ($line) => [
+                'name'       => $line['product']->name,
+                'quantity'   => $line['qty'],
+                'unit_price' => $line['unit_price'],
+                'subtotal'   => $line['subtotal'],
+            ])->values(),
         ]);
     }
 }

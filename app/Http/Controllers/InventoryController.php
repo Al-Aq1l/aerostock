@@ -31,7 +31,7 @@ class InventoryController extends Controller
             };
         }
 
-        $items = $query->orderBy('inventory.quantity')->paginate(20)->withQueryString();
+        $items = $query->orderBy('inventory.quantity')->paginate(10)->withQueryString();
 
         return view('inventory.index', compact('items'));
     }

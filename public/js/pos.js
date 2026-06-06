@@ -3,6 +3,9 @@
  * Manajemen state keranjang belanja untuk antarmuka Point of Sale.
  */
 
+const POS_READ_ONLY = Boolean(window.POS_READ_ONLY);
+let receiptNeedsRefresh = false;
+
 const Cart = {
     items: [],
     paymentMethod: 'cash',
@@ -43,7 +46,7 @@ const Cart = {
     get count() { return this.items.reduce((c, i) => c + i.qty, 0); },
 
     fmt(n) {
-        return 'Rp' + Math.round(n).toLocaleString('id-ID');
+        return 'Rp' + Math.round(Number(n) || 0).toLocaleString('id-ID');
     },
 
     render() {
@@ -54,12 +57,18 @@ const Cart = {
         const taxEl = document.getElementById('taxDisplay');
         const totEl = document.getElementById('totalDisplay');
         const btn = document.getElementById('checkoutBtn');
+        const mobileCount = document.getElementById('mobileCartCount');
+        const mobileTotal = document.getElementById('mobileCartTotal');
+
+        if (!container || !empty || !countEl || !subEl || !taxEl || !totEl || !btn) return;
 
         countEl.textContent = this.count;
         subEl.textContent = this.fmt(this.subtotal);
         taxEl.textContent = this.fmt(this.tax);
         totEl.textContent = this.fmt(this.total);
         btn.disabled = this.items.length === 0;
+        if (mobileCount) mobileCount.textContent = this.count;
+        if (mobileTotal) mobileTotal.textContent = this.fmt(this.total);
 
         Array.from(container.querySelectorAll('.cart-item')).forEach(el => el.remove());
 
@@ -98,7 +107,7 @@ const Cart = {
     },
 
     showAddFeedback(id) {
-        const card = document.querySelector(`[onclick*="addToCart(${id},"]`);
+        const card = document.querySelector(`.product-card[data-id="${id}"]`);
         if (card) {
             card.style.borderColor = 'var(--accent)';
             card.style.transform = 'scale(0.97)';
@@ -109,13 +118,117 @@ const Cart = {
 
 // ── Fungsi global ────────────────────────────────────────────────────────────
 
-function addToCart(id, name, price, image, stock) { Cart.add(id, name, price, image, stock); }
-function clearCart() { Cart.clear(); }
+function addToCart(id, name, price, image, stock) {
+    if (POS_READ_ONLY) return;
+    Cart.add(id, name, price, image, stock);
+}
+function clearCart() { if (!POS_READ_ONLY) Cart.clear(); }
+
+function isMobilePos() {
+    return window.matchMedia('(max-width: 760px)').matches;
+}
+
+function toggleMobileCart() {
+    document.body.classList.toggle('mobile-cart-open');
+}
+
+function openMobileCart() {
+    if (isMobilePos()) document.body.classList.add('mobile-cart-open');
+}
+
+function closeMobileCart() {
+    document.body.classList.remove('mobile-cart-open');
+}
+
+function bindProductCards() {
+    if (POS_READ_ONLY) return;
+
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', () => {
+            addToCart(
+                Number(card.dataset.id),
+                card.dataset.name,
+                Number(card.dataset.price),
+                card.dataset.image,
+                Number(card.dataset.stock)
+            );
+        });
+    });
+}
 
 function selectPayment(el, method) {
+    if (POS_READ_ONLY) return;
+
     Cart.paymentMethod = method;
     document.querySelectorAll('.pay-method-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
+}
+
+function receiptSnapshot() {
+    return {
+        items: Cart.items.map(item => ({ ...item })),
+        subtotal: Cart.subtotal,
+        tax: Cart.tax,
+        total: Cart.total,
+        paymentMethod: Cart.paymentMethod,
+        paidAt: new Date(),
+    };
+}
+
+function renderReceipt(data, snapshot) {
+    const payLabels = { cash: 'Tunai', card: 'Kartu', ewallet: 'QRIS' };
+    const receiptItems = document.getElementById('receiptItems');
+    const paidAt = data.created_at ? new Date(data.created_at) : snapshot.paidAt;
+    const items = Array.isArray(data.items) && data.items.length
+        ? data.items.map(item => ({
+            name: item.name,
+            qty: Number(item.quantity),
+            price: Number(item.unit_price),
+            subtotal: Number(item.subtotal),
+        }))
+        : snapshot.items.map(item => ({
+            name: item.name,
+            qty: Number(item.qty),
+            price: Number(item.price),
+            subtotal: Number(item.price) * Number(item.qty),
+        }));
+    const subtotal = data.subtotal ?? snapshot.subtotal;
+    const tax = data.tax ?? snapshot.tax;
+    const total = data.total ?? snapshot.total;
+    const paymentMethod = data.payment_method || snapshot.paymentMethod;
+
+    receiptItems.innerHTML = '';
+
+    document.getElementById('receiptRef').textContent = data.reference;
+    document.getElementById('receiptDate').textContent = paidAt.toLocaleString('id-ID', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+    document.getElementById('receiptMethod').textContent = payLabels[paymentMethod] || paymentMethod || '-';
+    document.getElementById('receiptSubtotal').textContent = Cart.fmt(subtotal);
+    document.getElementById('receiptTax').textContent = Cart.fmt(tax);
+    document.getElementById('receiptTotal').textContent = Cart.fmt(total);
+
+    items.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'receipt-item';
+
+        const info = document.createElement('div');
+        const name = document.createElement('strong');
+        const qty = document.createElement('span');
+        name.textContent = item.name;
+        qty.textContent = `${item.qty} x ${Cart.fmt(item.price)}`;
+        info.append(name, qty);
+
+        const itemTotal = document.createElement('strong');
+        itemTotal.textContent = Cart.fmt(item.subtotal);
+
+        row.append(info, itemTotal);
+        receiptItems.appendChild(row);
+    });
 }
 
 function filterCategory(el, catId) {
@@ -127,9 +240,11 @@ function filterCategory(el, catId) {
 }
 
 async function processCheckout() {
+    if (POS_READ_ONLY) return;
     if (Cart.items.length === 0) return;
 
     const btn = document.getElementById('checkoutBtn');
+    const snapshot = receiptSnapshot();
     btn.disabled = true;
     btn.textContent = 'Memproses...';
 
@@ -150,29 +265,46 @@ async function processCheckout() {
         const data = await res.json();
 
         if (data.success) {
-            document.getElementById('receiptRef').textContent = data.reference;
-            document.getElementById('receiptTotal').textContent = Cart.fmt(data.total);
+            renderReceipt(data, snapshot);
+            receiptNeedsRefresh = true;
             document.getElementById('receiptModal').classList.add('active');
             Cart.clear();
+            closeMobileCart();
         } else {
-            alert('Transaksi gagal. Silakan coba kembali.');
+            alert(data.message || 'Transaksi gagal. Silakan coba kembali.');
         }
     } catch (e) {
         alert('Terjadi kesalahan jaringan. Silakan coba kembali.');
     } finally {
-        btn.disabled = false;
+        btn.disabled = Cart.items.length === 0;
         btn.textContent = 'Proses Pembayaran';
     }
 }
 
 function closeReceipt() {
+    if (receiptNeedsRefresh) {
+        window.location.reload();
+        return;
+    }
+
     document.getElementById('receiptModal').classList.remove('active');
+}
+
+function printReceipt() {
+    window.print();
 }
 
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
+        if (document.getElementById('receiptModal')?.classList.contains('active')) {
+            closeReceipt();
+            return;
+        }
+
         document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        closeMobileCart();
     }
 });
 
-Cart.render();
+bindProductCards();
+if (!POS_READ_ONLY) Cart.render();

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
-    protected $fillable = ['category_id', 'name', 'sku', 'description', 'price', 'cost', 'image_url', 'is_active'];
+    protected $fillable = ['category_id', 'supplier_id', 'name', 'sku', 'description', 'price', 'cost', 'image_url', 'is_active'];
 
     protected $casts = [
         'price' => 'decimal:2',
@@ -20,6 +20,11 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class);
     }
 
     public function inventory(): HasOne
