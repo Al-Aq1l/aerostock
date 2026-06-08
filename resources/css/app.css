@@ -1106,23 +1106,23 @@ textarea.form-control {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--slate-400);
-  font-size: 0;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--danger);
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all var(--duration) var(--ease);
 }
 
 .cashier-logout-btn:hover {
-  color: var(--danger);
-  border-color: var(--danger-light);
-  background: var(--danger-light);
+  color: #fff;
+  border-color: #b91c1c;
+  background: #b91c1c;
 }
 
 .cashier-logout-btn svg {
@@ -2737,10 +2737,10 @@ body.modal-scroll-lock {
   }
 
   .cashier-logout-btn {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    justify-content: center;
+    min-height: 34px;
+    padding: 0 11px;
+    gap: 6px;
+    font-size: 12px;
   }
 
   .cashier-user-chip {
