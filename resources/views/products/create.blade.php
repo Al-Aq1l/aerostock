@@ -69,19 +69,6 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="supplier_id">Supplier</label>
-            <select class="form-control" name="supplier_id" id="supplier_id">
-              <option value="">Pilih supplier...</option>
-              @foreach($suppliers as $supplier)
-                <option value="{{ $supplier->id }}"
-                  {{ old('supplier_id', $product->supplier_id ?? '') == $supplier->id ? 'selected' : '' }}>
-                  {{ $supplier->name }}
-                </option>
-              @endforeach
-            </select>
-          </div>
-
           <div class="form-grid">
             <div class="form-group">
               <label for="price">Harga Jual (Rp) *</label>

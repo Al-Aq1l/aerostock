@@ -35,14 +35,8 @@
           <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
         @endforeach
       </select>
-      <select name="supplier" class="filter-select" onchange="this.form.submit()">
-        <option value="">Semua Supplier</option>
-        @foreach($suppliers as $supplier)
-          <option value="{{ $supplier->id }}" {{ request('supplier') == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
-        @endforeach
-      </select>
       <button type="submit" class="btn btn-primary">Cari</button>
-      @if(request()->hasAny(['search','category','supplier']))
+      @if(request()->hasAny(['search','category']))
         <a href="{{ route('products.index') }}" class="btn btn-secondary">Reset</a>
       @endif
     </div>
@@ -56,7 +50,6 @@
           <tr>
             <th>Produk</th>
             <th>Kategori</th>
-            <th>Supplier</th>
             <th>Harga Jual</th>
             <th>Harga Beli</th>
             <th>Margin</th>
@@ -85,7 +78,6 @@
                 </div>
               </td>
               <td>{{ $product->category->name ?? '-' }}</td>
-              <td>{{ $product->supplier->name ?? '-' }}</td>
               <td style="font-weight:700;color:var(--charcoal)">Rp{{ number_format($product->price, 0, ',', '.') }}</td>
               <td style="color:var(--slate-500)">Rp{{ number_format($product->cost, 0, ',', '.') }}</td>
               <td>
@@ -121,7 +113,6 @@
                         'sku' => $product->sku,
                         'image' => $product->image_url ?: 'https://placehold.co/600x420/EFF6FF/2563EB?text=' . urlencode($product->name),
                         'category' => $product->category->name ?? '-',
-                        'supplier' => $product->supplier->name ?? '-',
                         'price' => 'Rp' . number_format($product->price, 0, ',', '.'),
                         'cost' => 'Rp' . number_format($product->cost, 0, ',', '.'),
                         'margin' => $margin . '%',
@@ -181,7 +172,6 @@
       <img class="detail-image" id="detailProductImage" src="" alt="Gambar produk">
       <div class="detail-grid">
         <div><span>Kategori</span><strong id="detailCategory">-</strong></div>
-        <div><span>Supplier</span><strong id="detailSupplier">-</strong></div>
         <div><span>Harga Jual</span><strong id="detailPrice">-</strong></div>
         <div><span>Harga Beli</span><strong id="detailCost">-</strong></div>
         <div><span>Margin</span><strong id="detailMargin">-</strong></div>
@@ -222,7 +212,6 @@
     document.getElementById('detailProductImage').src = detail.image;
     document.getElementById('detailProductImage').alt = detail.name;
     document.getElementById('detailCategory').textContent = detail.category;
-    document.getElementById('detailSupplier').textContent = detail.supplier;
     document.getElementById('detailPrice').textContent = detail.price;
     document.getElementById('detailCost').textContent = detail.cost;
     document.getElementById('detailMargin').textContent = detail.margin;
