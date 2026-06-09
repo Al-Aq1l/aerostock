@@ -38,8 +38,8 @@
 
   {{-- Tabel --}}
   <div class="card">
-    <div class="table-wrapper">
-      <table>
+    <div class="table-wrapper inventory-table-wrapper">
+      <table class="inventory-table">
         <thead>
           <tr>
             <th>Produk</th>
@@ -62,7 +62,7 @@
             @endphp
             <tr>
               <td>
-                <div style="display:flex;align-items:center;gap:10px">
+                <div class="inventory-product-cell">
                   <img class="thumb"
                        src="{{ $product->image_url ?: 'https://placehold.co/80/EFF6FF/2563EB?text=IMG' }}"
                        alt="{{ $product->name }}">

@@ -955,6 +955,7 @@ tr:hover td {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  margin-top: 16px;
   margin-bottom: 16px;
 }
 
@@ -1682,6 +1683,20 @@ textarea.form-control {
   font-size: 13.5px;
 }
 
+.inventory-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.products-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
 .sku-code {
   font-size: 11px;
   color: var(--slate-400);
@@ -2031,6 +2046,39 @@ body.modal-scroll-lock {
   }
 }
 
+@keyframes landingFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes previewFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes chartSweep {
+  from {
+    background-position: 0 0, 0 0;
+  }
+
+  to {
+    background-position: 0 0, 80px 0;
+  }
+}
+
 .animate-in {
   animation: fadeInUp 0.35s var(--ease) both;
 }
@@ -2135,14 +2183,21 @@ body.modal-scroll-lock {
   background: var(--surface);
 }
 
+.landing-page {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
 .landing-nav {
   height: 72px;
   padding: 0 6vw;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
+  gap: 24px;
   border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
   position: sticky;
   top: 0;
   z-index: 20;
@@ -2153,10 +2208,37 @@ body.modal-scroll-lock {
   width: 180px;
 }
 
-.landing-nav nav {
+.landing-menu,
+.landing-auth-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.landing-menu-toggle {
+  display: none;
+}
+
+.landing-menu {
+  justify-content: center;
+}
+
+.landing-menu a {
+  color: var(--slate-500);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 12px;
+  border-radius: var(--radius-pill);
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
+}
+
+.landing-menu a:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.landing-auth-actions {
+  justify-content: flex-end;
 }
 
 .landing-hero {
@@ -2167,9 +2249,14 @@ body.modal-scroll-lock {
   align-items: center;
   padding: 52px 6vw 72px;
   background:
-    linear-gradient(135deg, rgba(37, 99, 235, 0.08), transparent 38%),
-    linear-gradient(315deg, rgba(16, 185, 129, 0.08), transparent 42%),
+    radial-gradient(circle at 14% 18%, rgba(37, 99, 235, 0.12), transparent 28%),
+    radial-gradient(circle at 88% 74%, rgba(16, 185, 129, 0.12), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%),
     var(--surface);
+}
+
+.landing-hero-copy {
+  animation: landingFadeIn 0.7s var(--ease) both;
 }
 
 .landing-kicker {
@@ -2205,12 +2292,57 @@ body.modal-scroll-lock {
   margin-top: 28px;
 }
 
+.landing-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 30px;
+  max-width: 640px;
+}
+
+.landing-metrics div {
+  padding: 14px;
+  border: 1px solid rgba(229, 231, 235, 0.86);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: var(--shadow-xs);
+  animation: landingFadeIn 0.62s var(--ease) both;
+}
+
+.landing-metrics div:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.landing-metrics div:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.landing-metrics strong,
+.landing-metrics span {
+  display: block;
+}
+
+.landing-metrics strong {
+  color: var(--charcoal);
+  font-size: 18px;
+}
+
+.landing-metrics span {
+  margin-top: 4px;
+  color: var(--slate-500);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
 .landing-preview {
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  background: var(--surface);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
   overflow: hidden;
+  animation: landingFadeIn 0.75s var(--ease) 0.12s both, previewFloat 6s ease-in-out 1s infinite;
+  transform-origin: center;
 }
 
 .preview-top {
@@ -2245,6 +2377,18 @@ body.modal-scroll-lock {
   padding: 18px;
 }
 
+.preview-stat,
+.feature-card {
+  transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+
+.preview-stat:hover,
+.feature-card:hover {
+  border-color: rgba(37, 99, 235, 0.24);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+  transform: translateY(-4px);
+}
+
 .preview-stat small {
   display: block;
   color: var(--slate-400);
@@ -2264,7 +2408,9 @@ body.modal-scroll-lock {
   background:
     linear-gradient(180deg, rgba(37, 99, 235, 0.16), rgba(37, 99, 235, 0)),
     linear-gradient(90deg, transparent 0 9%, rgba(37, 99, 235, 0.14) 9% 12%, transparent 12% 30%, rgba(16, 185, 129, 0.2) 30% 34%, transparent 34% 52%, rgba(245, 158, 11, 0.22) 52% 55%, transparent 55% 78%, rgba(37, 99, 235, 0.2) 78% 82%, transparent 82%);
+  background-size: auto, 160px 100%;
   border: 1px solid var(--border);
+  animation: chartSweep 5s linear infinite;
 }
 
 .preview-list {
@@ -2306,6 +2452,26 @@ body.modal-scroll-lock {
   gap: 16px;
 }
 
+.feature-card {
+  min-height: 150px;
+}
+
+.feature-card:nth-child(1) {
+  animation: landingFadeIn 0.6s var(--ease) 0.05s both;
+}
+
+.feature-card:nth-child(2) {
+  animation: landingFadeIn 0.6s var(--ease) 0.12s both;
+}
+
+.feature-card:nth-child(3) {
+  animation: landingFadeIn 0.6s var(--ease) 0.19s both;
+}
+
+.feature-card:nth-child(4) {
+  animation: landingFadeIn 0.6s var(--ease) 0.26s both;
+}
+
 .feature-card strong,
 .contact-box strong {
   display: block;
@@ -2321,12 +2487,69 @@ body.modal-scroll-lock {
   line-height: 1.6;
 }
 
+.landing-workflow {
+  background: #ffffff;
+}
+
+.workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.workflow-grid article {
+  position: relative;
+  min-height: 190px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(37, 99, 235, 0.06), transparent 56%),
+    var(--surface);
+  overflow: hidden;
+  transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+}
+
+.workflow-grid article:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+.workflow-grid span {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.workflow-grid strong {
+  display: block;
+  color: var(--charcoal);
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.workflow-grid p {
+  color: var(--slate-500);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
 .landing-contact {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
   gap: 36px;
   align-items: center;
-  background: var(--surface-2);
+  background:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.07), transparent 36%),
+    var(--surface-2);
 }
 
 .auth-shell {
@@ -2504,6 +2727,10 @@ body.modal-scroll-lock {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .workflow-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .landing-hero,
   .landing-contact,
   .split-grid {
@@ -2638,10 +2865,65 @@ body.modal-scroll-lock {
     padding: 20px;
   }
 
+  .landing-nav {
+    height: auto;
+    padding: 10px 16px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .landing-menu-toggle {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--charcoal);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .landing-menu-toggle svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+  }
+
+  .landing-menu,
+  .landing-auth-actions {
+    grid-column: 1 / -1;
+    display: none;
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  .landing-menu-open .landing-menu,
+  .landing-menu-open .landing-auth-actions {
+    display: grid;
+    opacity: 1;
+    transform: translateY(0);
+    animation: landingFadeIn 0.22s var(--ease) both;
+  }
+
+  .landing-menu-open .landing-menu {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding-top: 6px;
+  }
+
+  .landing-menu-open .landing-auth-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
   .dashboard-grid,
   .form-grid,
   .stat-grid,
-  .feature-grid {
+  .feature-grid,
+  .workflow-grid {
     grid-template-columns: 1fr;
   }
 
@@ -2671,14 +2953,33 @@ body.modal-scroll-lock {
     overflow-x: hidden;
   }
 
+  .landing-nav {
+    position: sticky;
+    gap: 8px 10px;
+  }
+
   .landing-logo img,
   .auth-brand img {
-    width: 150px;
+    width: 128px;
+  }
+
+  .landing-auth-actions .btn {
+    min-height: 36px;
+    padding: 8px 13px;
+    font-size: 13px;
+  }
+
+  .landing-menu a {
+    padding: 7px 10px;
+    font-size: 12px;
+    background: var(--surface-2);
+    text-align: center;
   }
 
   .landing-hero {
     min-height: auto;
-    gap: 28px;
+    gap: 24px;
+    padding-top: 22px;
   }
 
   .landing-hero h1 {
@@ -2695,6 +2996,52 @@ body.modal-scroll-lock {
     font-size: 26px;
   }
 
+  .landing-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .landing-actions .btn,
+  .landing-auth-actions .btn {
+    width: 100%;
+  }
+
+  .landing-menu {
+    order: initial;
+  }
+
+  .landing-auth-actions {
+    order: initial;
+  }
+
+  .landing-metrics {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .landing-preview {
+    border-radius: var(--radius-md);
+    animation: landingFadeIn 0.65s var(--ease) 0.1s both;
+  }
+
+  .preview-grid {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .preview-chart,
+  .preview-list {
+    grid-column: auto;
+  }
+
+  .preview-chart {
+    height: 150px;
+  }
+
+  .feature-card {
+    min-height: auto;
+  }
+
   .auth-panel {
     padding: 24px;
   }
@@ -2703,8 +3050,307 @@ body.modal-scroll-lock {
     grid-template-columns: 48px minmax(0, 1fr);
   }
 
+  .inline-edit--category {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .inline-edit .btn {
     grid-column: 1 / -1;
+  }
+
+  .category-table-wrapper {
+    overflow: visible;
+  }
+
+  .category-table {
+    min-width: 0;
+  }
+
+  .category-table,
+  .category-table thead,
+  .category-table tbody,
+  .category-table tr,
+  .category-table th,
+  .category-table td {
+    display: block;
+  }
+
+  .category-table thead {
+    display: none;
+  }
+
+  .category-table tr {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .category-table tr:last-child {
+    border-bottom: 0;
+  }
+
+  .category-table td {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .category-table td::before {
+    color: var(--slate-400);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  .category-table td:nth-child(1)::before {
+    content: "Kategori";
+  }
+
+  .category-table td:nth-child(2)::before {
+    content: "Slug";
+  }
+
+  .category-table td:nth-child(3)::before {
+    content: "Produk";
+  }
+
+  .category-table td:nth-child(4)::before {
+    content: "Aksi";
+  }
+
+  .category-table td[style*="text-align:right"] {
+    text-align: left !important;
+  }
+
+  .category-table .form-control {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .inventory-table-wrapper {
+    overflow: visible;
+  }
+
+  .inventory-table {
+    min-width: 0;
+  }
+
+  .inventory-table,
+  .inventory-table thead,
+  .inventory-table tbody,
+  .inventory-table tr,
+  .inventory-table th,
+  .inventory-table td {
+    display: block;
+  }
+
+  .inventory-table thead {
+    display: none;
+  }
+
+  .inventory-table tr {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .inventory-table tr:last-child {
+    border-bottom: 0;
+  }
+
+  .inventory-table td {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .inventory-table td:first-child {
+    grid-template-columns: 1fr;
+    padding-bottom: 12px;
+  }
+
+  .inventory-table td:first-child::before {
+    display: none;
+  }
+
+  .inventory-table td::before {
+    color: var(--slate-400);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  .inventory-table td:nth-child(2)::before {
+    content: "Kategori";
+  }
+
+  .inventory-table td:nth-child(3)::before {
+    content: "SKU";
+  }
+
+  .inventory-table td:nth-child(4)::before {
+    content: "Stok";
+  }
+
+  .inventory-table td:nth-child(5)::before {
+    content: "Minimum";
+  }
+
+  .inventory-table td:nth-child(6)::before {
+    content: "Status";
+  }
+
+  .inventory-table td:nth-child(7)::before {
+    content: "Restok";
+  }
+
+  .inventory-table td:nth-child(8)::before {
+    content: "Aksi";
+  }
+
+  .inventory-product-cell {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .inventory-product-cell .thumb {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+  }
+
+  .inventory-product-cell .product-name-cell {
+    min-width: 0;
+    font-size: 16px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .inventory-table td[style*="text-align:right"] {
+    text-align: left !important;
+  }
+
+  .inventory-table td[style*="text-align:right"] .btn {
+    width: 100%;
+  }
+
+  .products-table-wrapper {
+    overflow: visible;
+  }
+
+  .products-table {
+    min-width: 0;
+  }
+
+  .products-table,
+  .products-table thead,
+  .products-table tbody,
+  .products-table tr,
+  .products-table th,
+  .products-table td {
+    display: block;
+  }
+
+  .products-table thead {
+    display: none;
+  }
+
+  .products-table tr {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .products-table tr:last-child {
+    border-bottom: 0;
+  }
+
+  .products-table td {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .products-table td:first-child {
+    grid-template-columns: 1fr;
+    padding-bottom: 12px;
+  }
+
+  .products-table td:first-child::before {
+    display: none;
+  }
+
+  .products-table td::before {
+    color: var(--slate-400);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  .products-table td:nth-child(2)::before {
+    content: "Kategori";
+  }
+
+  .products-table td:nth-child(3)::before {
+    content: "Harga Jual";
+  }
+
+  .products-table td:nth-child(4)::before {
+    content: "Harga Beli";
+  }
+
+  .products-table td:nth-child(5)::before {
+    content: "Margin";
+  }
+
+  .products-table td:nth-child(6)::before {
+    content: "Stok";
+  }
+
+  .products-table td:nth-child(7)::before {
+    content: "Status";
+  }
+
+  .products-table td:nth-child(8)::before {
+    content: "Aksi";
+  }
+
+  .products-product-cell {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .products-product-cell .thumb {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+  }
+
+  .products-product-cell .product-name-cell {
+    min-width: 0;
+    font-size: 16px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .products-table td[style*="text-align:right"] {
+    text-align: left !important;
+  }
+
+  .products-table td[style*="text-align:right"] .action-trigger {
+    width: 100%;
   }
 
   .pos-layout {

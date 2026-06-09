@@ -31,8 +31,8 @@
     </div>
 
     <div class="card">
-      <div class="table-wrapper">
-        <table>
+      <div class="table-wrapper category-table-wrapper">
+        <table class="category-table">
           <thead>
             <tr>
               <th>Kategori</th>

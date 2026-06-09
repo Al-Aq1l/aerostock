@@ -12,7 +12,19 @@
     <a href="{{ route('landing') }}" class="landing-logo">
       <img src="{{ asset('logo.png') }}" alt="AeroStock">
     </a>
-    <nav>
+    <button class="landing-menu-toggle" type="button" aria-label="Buka menu" aria-expanded="false" onclick="toggleLandingMenu(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="7" x2="20" y2="7"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="17" x2="20" y2="17"/>
+      </svg>
+    </button>
+    <nav class="landing-menu" aria-label="Navigasi utama">
+      <a href="#fitur">Fitur</a>
+      <a href="#alur">Alur Kerja</a>
+      <a href="#kontak">Kontak</a>
+    </nav>
+    <div class="landing-auth-actions">
       @auth
         <a href="{{ auth()->user()->isAdmin() ? route('dashboard') : route('pos.index') }}" class="btn btn-primary">
           {{ auth()->user()->isAdmin() ? 'Buka Dasbor' : 'Buka POS' }}
@@ -21,7 +33,7 @@
         <a href="{{ route('login') }}" class="btn btn-secondary">Masuk</a>
         <a href="{{ route('register') }}" class="btn btn-primary">Daftar</a>
       @endauth
-    </nav>
+    </div>
   </header>
 
   <main>
@@ -37,6 +49,20 @@
             <a href="{{ route('login') }}" class="btn btn-primary btn-lg">Masuk ke Sistem</a>
           @endauth
           <a href="#fitur" class="btn btn-secondary btn-lg">Lihat Fitur</a>
+        </div>
+        <div class="landing-metrics">
+          <div>
+            <strong>Realtime</strong>
+            <span>stok dan transaksi</span>
+          </div>
+          <div>
+            <strong>2 Role</strong>
+            <span>admin dan kasir</span>
+          </div>
+          <div>
+            <strong>1 Sistem</strong>
+            <span>POS, katalog, laporan</span>
+          </div>
         </div>
       </div>
       <div class="landing-preview">
@@ -87,7 +113,31 @@
       </div>
     </section>
 
-    <section class="landing-section landing-contact">
+    <section class="landing-section landing-workflow" id="alur">
+      <div class="section-heading">
+        <span class="landing-kicker">Retail Workflow</span>
+        <h2>Dari barang masuk sampai laporan, semuanya tersambung</h2>
+      </div>
+      <div class="workflow-grid">
+        <article>
+          <span>01</span>
+          <strong>Input Produk</strong>
+          <p>Tambahkan produk, kategori, harga beli, harga jual, dan batas stok minimum.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <strong>Transaksi POS</strong>
+          <p>Kasir memilih produk, sistem menghitung total, dan stok langsung terpotong.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <strong>Pantau Laporan</strong>
+          <p>Pemilik toko bisa melihat pendapatan, item terjual, dan stok yang perlu diisi ulang.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="landing-section landing-contact" id="kontak">
       <div>
         <span class="landing-kicker">Contact / About Us</span>
         <h2>Dibangun untuk toko yang ingin lebih rapi secara digital</h2>
@@ -100,5 +150,18 @@
       </div>
     </section>
   </main>
+  <script>
+    function toggleLandingMenu(button) {
+      const isOpen = document.body.classList.toggle('landing-menu-open');
+      button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    document.querySelectorAll('.landing-menu a').forEach((link) => {
+      link.addEventListener('click', () => {
+        document.body.classList.remove('landing-menu-open');
+        document.querySelector('.landing-menu-toggle')?.setAttribute('aria-expanded', 'false');
+      });
+    });
+  </script>
 </body>
 </html>
