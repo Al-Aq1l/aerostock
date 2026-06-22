@@ -148,8 +148,8 @@
       </div>
       <a href="{{ route('reports.index') }}" class="btn btn-secondary" style="padding:5px 12px;font-size:12px;white-space:nowrap">Lihat Semua</a>
     </div>
-    <div class="table-wrapper">
-      <table>
+    <div class="table-wrapper dashboard-table-wrapper">
+      <table class="dashboard-table">
         <thead>
           <tr>
             <th>No. Referensi</th>

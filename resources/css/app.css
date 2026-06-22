@@ -1,3 +1,6 @@
+@tailwind components;
+@tailwind utilities;
+
 /* ============================================================
    AEROSTOCK — Minimalist Design System (Indonesia)
    Clean white, light grey, Electric Blue accent
@@ -3462,14 +3465,54 @@ body.modal-scroll-lock {
     transition: transform var(--duration) var(--ease);
   }
 
+  .pos-layout--readonly {
+    display: flex;
+    flex-direction: column;
+  }
+
   .pos-layout--readonly .pos-checkout-sidebar {
     width: auto;
     height: auto;
     position: static;
     transform: none;
     box-shadow: none;
-    border-top: 1px solid var(--border);
+    border-top: none;
+    border-bottom: 1px solid var(--border);
     border-left: none;
+    order: -1; /* Render at the top on mobile */
+  }
+
+  .pos-monitor-sidebar .checkout-header {
+    display: none;
+  }
+
+  .pos-monitor-body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .pos-monitor-stat {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 8px 10px;
+  }
+
+  .pos-monitor-stat span {
+    font-size: 11px;
+  }
+
+  .pos-monitor-stat strong {
+    font-size: 14px;
+  }
+
+  .pos-monitor-note {
+    grid-column: 1 / -1;
+    margin-top: 0;
+    padding: 6px 10px;
+    font-size: 11px;
   }
 
   .mobile-cart-open .pos-checkout-sidebar {
@@ -3597,6 +3640,159 @@ body.modal-scroll-lock {
   .modal {
     width: calc(100vw - 24px);
   }
+
+  /* ── Responsive Table overrides for Reports and Dashboard ── */
+  .reports-table-wrapper,
+  .dashboard-table-wrapper {
+    overflow: visible;
+  }
+
+  .reports-table,
+  .dashboard-table {
+    min-width: 0;
+  }
+
+  .reports-table,
+  .reports-table thead,
+  .reports-table tbody,
+  .reports-table tr,
+  .reports-table th,
+  .reports-table td,
+  .dashboard-table,
+  .dashboard-table thead,
+  .dashboard-table tbody,
+  .dashboard-table tr,
+  .dashboard-table th,
+  .dashboard-table td {
+    display: block;
+  }
+
+  .reports-table thead,
+  .dashboard-table thead {
+    display: none;
+  }
+
+  .reports-table tr,
+  .dashboard-table tr {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .reports-table tr:last-child,
+  .dashboard-table tr:last-child {
+    border-bottom: 0;
+  }
+
+  .reports-table td,
+  .dashboard-table td {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .reports-table td:first-child,
+  .dashboard-table td:first-child {
+    grid-template-columns: 1fr;
+    padding-bottom: 12px;
+  }
+
+  .reports-table td:first-child::before,
+  .dashboard-table td:first-child::before {
+    display: none;
+  }
+
+  .reports-table td::before,
+  .dashboard-table td::before {
+    color: var(--slate-400);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  /* Reports Table Labels */
+  .reports-table td:nth-child(2)::before { content: "Tanggal"; }
+  .reports-table td:nth-child(3)::before { content: "Item"; }
+  .reports-table td:nth-child(4)::before { content: "Bayar"; }
+  .reports-table td:nth-child(5)::before { content: "Subtotal"; }
+  .reports-table td:nth-child(6)::before { content: "Pajak"; }
+  .reports-table td:nth-child(7)::before { content: "Total"; }
+  .reports-table td:nth-child(8)::before { content: "Status"; }
+
+  /* Dashboard Table Labels */
+  .dashboard-table td:nth-child(2)::before { content: "Item"; }
+  .dashboard-table td:nth-child(3)::before { content: "Bayar"; }
+  .dashboard-table td:nth-child(4)::before { content: "Status"; }
+  .dashboard-table td:nth-child(5)::before { content: "Total"; }
+  .dashboard-table td:nth-child(6)::before { content: "Tanggal"; }
+
+  /* ── Responsive Table overrides for Suppliers ── */
+  .suppliers-table-wrapper {
+    overflow: visible;
+  }
+
+  .suppliers-table {
+    min-width: 0;
+  }
+
+  .suppliers-table,
+  .suppliers-table thead,
+  .suppliers-table tbody,
+  .suppliers-table tr,
+  .suppliers-table th,
+  .suppliers-table td {
+    display: block;
+  }
+
+  .suppliers-table thead {
+    display: none;
+  }
+
+  .suppliers-table tr {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .suppliers-table tr:last-child {
+    border-bottom: 0;
+  }
+
+  .suppliers-table td {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .suppliers-table td:first-child {
+    grid-template-columns: 1fr;
+    padding-bottom: 12px;
+  }
+
+  .suppliers-table td:first-child::before {
+    display: none;
+  }
+
+  .suppliers-table td::before {
+    color: var(--slate-400);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  .suppliers-table td:nth-child(2)::before { content: "Kontak"; }
+  .suppliers-table td:nth-child(3)::before { content: "Email"; }
+  .suppliers-table td:nth-child(4)::before { content: "Produk"; }
+  .suppliers-table td:nth-child(5)::before { content: "Status"; }
+  .suppliers-table td:nth-child(6)::before { content: "Aksi"; }
 }
 
 @media (max-width: 420px) {
@@ -4096,5 +4292,132 @@ body.modal-scroll-lock {
 
   .stat-value {
     font-size: 20px;
+  }
+}
+
+/* ── Custom Landing Redesign Animations ──────────────────────── */
+@keyframes movingMesh {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes receiptPrint {
+  0% { transform: translateY(100%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scaleCheck {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-moving-mesh {
+  background-size: 200% 200%;
+  animation: movingMesh 15s ease infinite;
+}
+
+.animate-receipt-print {
+  animation: receiptPrint 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #10B981;
+  fill: none;
+  animation: strokeCheck 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: strokeCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+}
+
+@keyframes strokeCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.checkmark-wrapper {
+  animation: scaleCheck 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+/* ── Print Styles (Struk POS) ────────────────────────────────── */
+@media print {
+  /* Sembunyikan elemen utama halaman */
+  body > * {
+    display: none !important;
+  }
+
+  /* Tampilkan hanya modal overlay tempat struk berada */
+  #receiptModal {
+    display: block !important;
+    position: static !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+
+  /* Sembunyikan header dan tombol modal */
+  #receiptModal .modal-header,
+  #receiptModal .receipt-success-banner,
+  #receiptModal .receipt-actions {
+    display: none !important;
+  }
+
+  /* Reset layout modal */
+  #receiptModal .modal {
+    position: static !important;
+    box-shadow: none !important;
+    border: none !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #receiptModal .modal-body {
+    padding: 0 !important;
+  }
+
+  /* Kertas struk */
+  #receiptPrintArea {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: black !important;
+  }
+
+  /* Paksa semua teks dalam struk berwarna hitam agar tegas di printer */
+  #receiptPrintArea,
+  #receiptPrintArea * {
+    color: black !important;
+  }
+
+  /* Atur garis batas di struk */
+  #receiptPrintArea .receipt-meta,
+  #receiptPrintArea .receipt-summary,
+  #receiptPrintArea .receipt-items {
+    border-top: 1px dashed black !important;
+  }
+
+  #receiptPrintArea .receipt-ref {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 10px auto !important;
+  }
+
+  /* Sesuaikan margin untuk kertas thermal */
+  @page {
+    margin: 0;
   }
 }

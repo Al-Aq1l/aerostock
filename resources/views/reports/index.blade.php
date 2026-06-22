@@ -118,8 +118,8 @@
         </div>
       </div>
     @else
-      <div class="table-wrapper">
-        <table>
+      <div class="table-wrapper reports-table-wrapper">
+        <table class="reports-table">
           <thead>
             <tr>
               <th>No. Referensi</th>

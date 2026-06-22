@@ -35,8 +35,8 @@
   </form>
 
   <div class="card">
-    <div class="table-wrapper">
-      <table>
+    <div class="table-wrapper suppliers-table-wrapper">
+      <table class="suppliers-table">
         <thead>
           <tr>
             <th>Supplier</th>
